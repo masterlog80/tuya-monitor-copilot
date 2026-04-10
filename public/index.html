@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tuya Monitor</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <!-- Login Page -->
+  <div id="login-page" class="page active">
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-logo">
+          <span class="logo-icon">💡</span>
+          <h1>Tuya Monitor</h1>
+          <p class="subtitle">Smart Device Management</p>
+        </div>
+        <form id="login-form" autocomplete="on">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" autocomplete="username" placeholder="Enter username" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-field">
+              <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter password" required />
+              <button type="button" class="toggle-password" aria-label="Toggle password visibility">👁</button>
+            </div>
+          </div>
+          <div id="login-error" class="alert alert-error hidden"></div>
+          <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+            <span class="btn-text">Sign In</span>
+            <span class="btn-spinner hidden">⏳</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app-page" class="page">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="logo-icon">💡</span>
+        <span class="logo-text">Tuya Monitor</span>
+        <button class="sidebar-close" id="sidebar-close" aria-label="Close menu">✕</button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-view="dashboard">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-view="devices">
+          <span class="nav-icon">📱</span>
+          <span class="nav-label">Devices</span>
+        </a>
+        <a href="#" class="nav-item admin-only hidden" data-view="users">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Users</span>
+        </a>
+        <a href="#" class="nav-item admin-only hidden" data-view="settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <span class="user-avatar" id="user-avatar">U</span>
+          <div class="user-details">
+            <span class="user-name" id="sidebar-username">User</span>
+            <span class="user-role" id="sidebar-role">user</span>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="logout-btn" title="Logout">🚪</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="btn btn-ghost btn-icon" id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+          <h2 class="page-title" id="page-title">Dashboard</h2>
+        </div>
+        <div class="topbar-right">
+          <div class="refresh-info" id="refresh-info">
+            <span class="refresh-label">Next refresh in</span>
+            <span class="refresh-countdown" id="refresh-countdown">--</span>s
+          </div>
+          <button class="btn btn-ghost btn-icon" id="refresh-btn" title="Refresh now">🔄</button>
+          <button class="btn btn-ghost btn-icon" id="theme-toggle" title="Toggle theme">🌙</button>
+        </div>
+      </header>
+
+      <!-- Views -->
+      <main class="content">
+
+        <!-- Dashboard View -->
+        <div id="view-dashboard" class="view active">
+          <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">📱</div>
+              <div class="stat-info">
+                <span class="stat-value" id="stat-total">--</span>
+                <span class="stat-label">Total Devices</span>
+              </div>
+            </div>
+            <div class="stat-card online">
+              <div class="stat-icon">✅</div>
+              <div class="stat-info">
+                <span class="stat-value" id="stat-online">--</span>
+                <span class="stat-label">Online</span>
+              </div>
+            </div>
+            <div class="stat-card active">
+              <div class="stat-icon">💡</div>
+              <div class="stat-info">
+                <span class="stat-value" id="stat-active">--</span>
+                <span class="stat-label">Switched On</span>
+              </div>
+            </div>
+            <div class="stat-card offline">
+              <div class="stat-icon">❌</div>
+              <div class="stat-info">
+                <span class="stat-value" id="stat-offline">--</span>
+                <span class="stat-label">Offline</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <h3>Device Overview</h3>
+            <div class="filter-bar">
+              <input type="search" id="device-search" placeholder="🔍 Search devices..." class="search-input" />
+              <select id="device-filter" class="filter-select">
+                <option value="all">All Devices</option>
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+                <option value="on">Switched On</option>
+                <option value="off">Switched Off</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="devices-error" class="alert alert-error hidden"></div>
+          <div id="devices-grid" class="devices-grid">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <p>Loading devices...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Devices View (detail) -->
+        <div id="view-devices" class="view">
+          <div class="section-header">
+            <h3>All Devices</h3>
+          </div>
+          <div id="devices-table-container">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <p>Loading devices...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users View -->
+        <div id="view-users" class="view">
+          <div class="section-header">
+            <h3>User Management</h3>
+            <button class="btn btn-primary btn-sm" id="add-user-btn">+ Add User</button>
+          </div>
+          <div id="users-list" class="users-list">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <p>Loading users...</p>
+            </div>
+          </div>
+          <div class="section-header" style="margin-top:2rem">
+            <h3>Change My Password</h3>
+          </div>
+          <div class="card password-card">
+            <form id="change-password-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Current Password</label>
+                  <input type="password" id="current-password" required />
+                </div>
+                <div class="form-group">
+                  <label>New Password</label>
+                  <input type="password" id="new-password" required minlength="6" />
+                </div>
+              </div>
+              <div id="password-msg" class="alert hidden"></div>
+              <button type="submit" class="btn btn-primary btn-sm">Update Password</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="view-settings" class="view">
+          <div class="section-header">
+            <h3>Tuya API Settings</h3>
+          </div>
+          <div class="card">
+            <form id="settings-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Access ID (Client ID)</label>
+                  <input type="text" id="s-access-id" placeholder="Enter Tuya Access ID" />
+                </div>
+                <div class="form-group">
+                  <label>Access Secret</label>
+                  <input type="password" id="s-access-secret" placeholder="Enter Tuya Access Secret" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Region</label>
+                  <select id="s-region">
+                    <option value="eu">Europe (EU)</option>
+                    <option value="us">United States (US)</option>
+                    <option value="cn">China (CN)</option>
+                    <option value="in">India (IN)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Tuya User ID</label>
+                  <input type="text" id="s-user-id" placeholder="Enter Tuya User ID" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Auto-refresh Interval (seconds)</label>
+                <input type="number" id="s-refresh-interval" min="5" max="3600" value="30" />
+                <small class="form-hint">Minimum 5 seconds. Set how often the device list refreshes.</small>
+              </div>
+              <div id="settings-msg" class="alert hidden"></div>
+              <button type="submit" class="btn btn-primary">Save Settings</button>
+            </form>
+          </div>
+
+          <div class="section-header" style="margin-top:2rem">
+            <h3>How to Get Tuya Credentials</h3>
+          </div>
+          <div class="card info-card">
+            <ol class="info-list">
+              <li>Go to <a href="https://iot.tuya.com" target="_blank" rel="noopener">iot.tuya.com</a> and sign in.</li>
+              <li>Create a new project or open an existing one.</li>
+              <li>Find the <strong>Access ID</strong> and <strong>Access Secret</strong> on the project's overview page.</li>
+              <li>Link your devices to the project under "Devices" → "Link App Account".</li>
+              <li>Find your <strong>User ID</strong> under "Devices" → "Link App Account" → your account's UID.</li>
+              <li>Select the correct region matching your Tuya account region.</li>
+            </ol>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Device Detail Modal -->
+  <div id="device-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-device-name">Device Details</h3>
+        <button class="btn btn-ghost btn-icon" id="modal-close" aria-label="Close modal">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add User Modal -->
+  <div id="user-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-overlay" id="user-modal-overlay"></div>
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h3 id="user-modal-title">Add User</h3>
+        <button class="btn btn-ghost btn-icon" id="user-modal-close" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="user-form">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="u-username" required />
+          </div>
+          <div class="form-group">
+            <label id="u-password-label">Password</label>
+            <input type="password" id="u-password" />
+            <small class="form-hint" id="u-password-hint">Leave blank to keep existing password when editing.</small>
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select id="u-role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <input type="hidden" id="u-id" />
+          <div id="user-form-msg" class="alert hidden"></div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="user-modal-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="user-form-submit">Add User</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
