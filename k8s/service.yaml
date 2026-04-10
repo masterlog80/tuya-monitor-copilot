@@ -1,0 +1,36 @@
+---
+# ClusterIP Service (use with Ingress or NodePort for external access)
+apiVersion: v1
+kind: Service
+metadata:
+  name: tuya-monitor
+  namespace: default
+  labels:
+    app: tuya-monitor
+spec:
+  selector:
+    app: tuya-monitor
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+
+---
+# Optional: NodePort Service for direct K3S access without Ingress
+# Uncomment if you want to access via http://<node-ip>:30080
+#
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: tuya-monitor-nodeport
+#   namespace: default
+# spec:
+#   selector:
+#     app: tuya-monitor
+#   ports:
+#     - port: 80
+#       targetPort: 3000
+#       nodePort: 30080
+#   type: NodePort

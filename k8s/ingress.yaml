@@ -1,0 +1,31 @@
+---
+# Ingress for K3S (uses Traefik by default)
+# Adjust host as needed
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tuya-monitor
+  namespace: default
+  labels:
+    app: tuya-monitor
+  annotations:
+    # Uncomment if using cert-manager for TLS:
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # traefik.ingress.kubernetes.io/router.entrypoints: websecure
+spec:
+  rules:
+    - host: tuya-monitor.local   # Replace with your actual hostname or IP
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tuya-monitor
+                port:
+                  number: 80
+  # Uncomment to enable TLS:
+  # tls:
+  #   - hosts:
+  #       - tuya-monitor.local
+  #     secretName: tuya-monitor-tls

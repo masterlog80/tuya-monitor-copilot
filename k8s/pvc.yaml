@@ -1,0 +1,15 @@
+---
+# Persistent Volume Claim for app data (users.json, settings.json)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tuya-monitor-data
+  namespace: default
+  labels:
+    app: tuya-monitor
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
