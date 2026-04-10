@@ -229,8 +229,15 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label>Tuya User ID</label>
+                  <label>Tuya User ID <span class="form-hint-inline">(or use User Code below)</span></label>
                   <input type="text" id="s-user-id" placeholder="Enter Tuya User ID" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>User Code <span class="form-hint-inline">(from Tuya Smart / Smart Life app)</span></label>
+                  <input type="text" id="s-user-code" placeholder="e.g. a1b2c3d4e5f6" />
+                  <small class="form-hint">Takes precedence over the User ID field when both are provided. Find it in the Tuya Smart or Smart Life app: <strong>Profile → tap your avatar → User Code</strong>.</small>
                 </div>
               </div>
               <div class="form-group">
@@ -252,7 +259,12 @@
               <li>Create a new project or open an existing one.</li>
               <li>Find the <strong>Access ID</strong> and <strong>Access Secret</strong> on the project's overview page.</li>
               <li>Link your devices to the project under "Devices" → "Link App Account".</li>
-              <li>Find your <strong>User ID</strong> under "Devices" → "Link App Account" → your account's UID.</li>
+              <li>Choose one of the two options to identify your account:
+                <ul style="margin-top:0.5rem">
+                  <li><strong>User Code (recommended)</strong> – Open the <strong>Tuya Smart</strong> or <strong>Smart Life</strong> app, go to <em>Profile → tap your avatar → User Code</em>. Enter this code in the <em>User Code</em> field above. The User ID will be resolved automatically.</li>
+                  <li><strong>User ID</strong> – Find your UID under "Devices" → "Link App Account" → your account's UID on <a href="https://iot.tuya.com" target="_blank" rel="noopener">iot.tuya.com</a>.</li>
+                </ul>
+              </li>
               <li>Select the correct region matching your Tuya account region.</li>
             </ol>
           </div>

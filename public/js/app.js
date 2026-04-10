@@ -563,6 +563,7 @@ async function loadSettings() {
     document.getElementById('s-access-secret').value = settings.tuya.accessSecret || '';
     document.getElementById('s-region').value = settings.tuya.region || 'eu';
     document.getElementById('s-user-id').value = settings.tuya.userId || '';
+    document.getElementById('s-user-code').value = settings.tuya.userCode || '';
     document.getElementById('s-refresh-interval').value = settings.app.refreshInterval || 30;
   } catch (err) {
     showToast(`❌ ${err.message}`, 'error');
@@ -790,7 +791,8 @@ document.addEventListener('DOMContentLoaded', () => {
           accessId: document.getElementById('s-access-id').value.trim(),
           accessSecret: document.getElementById('s-access-secret').value.trim(),
           region: document.getElementById('s-region').value,
-          userId: document.getElementById('s-user-id').value.trim()
+          userId: document.getElementById('s-user-id').value.trim(),
+          userCode: document.getElementById('s-user-code').value.trim()
         },
         app: { refreshInterval: interval }
       });

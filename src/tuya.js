@@ -40,7 +40,7 @@ function buildSign(accessId, accessSecret, t, nonce, accessToken, method, path, 
 }
 
 async function getAccessToken() {
-  const { accessId, accessSecret } = getTuyaSettings();
+  const { accessId, accessSecret, userCode } = getTuyaSettings();
   if (!accessId || !accessSecret) {
     throw new Error('Tuya API credentials not configured. Please set them in Settings.');
   }
@@ -48,7 +48,11 @@ async function getAccessToken() {
   const baseUrl = getBaseUrl();
   const t = Date.now().toString();
   const nonce = crypto.randomBytes(8).toString('hex');
-  const path = '/v1.0/token?grant_type=1';
+  // Use grant_type=2 (user code from the Tuya app) when userCode is configured,
+  // otherwise fall back to grant_type=1 (project-level token).
+  const path = userCode
+    ? `/v1.0/token?grant_type=2&code=${encodeURIComponent(userCode)}`
+    : '/v1.0/token?grant_type=1';
   const sign = buildSign(accessId, accessSecret, t, nonce, '', 'GET', path);
 
   const res = await fetch(`${baseUrl}${path}`, {
@@ -65,16 +69,17 @@ async function getAccessToken() {
   if (!data.success) {
     throw new Error(`Tuya auth failed: ${data.msg || JSON.stringify(data)}`);
   }
-  return data.result.access_token;
+  return data.result; // { access_token, uid, refresh_token, expire_time, ... }
 }
 
-async function tuyaRequest(method, urlPath, body = null) {
+async function tuyaRequest(method, urlPath, body = null, prefetchedToken = null) {
   const { accessId, accessSecret } = getTuyaSettings();
   if (!accessId || !accessSecret) {
     throw new Error('Tuya API credentials not configured. Please set them in Settings.');
   }
 
-  const accessToken = await getAccessToken();
+  const tokenResult = prefetchedToken || await getAccessToken();
+  const accessToken = tokenResult.access_token;
   const baseUrl = getBaseUrl();
   const t = Date.now().toString();
   const nonce = crypto.randomBytes(8).toString('hex');
@@ -105,10 +110,18 @@ async function tuyaRequest(method, urlPath, body = null) {
 }
 
 async function getDevices() {
-  const { userId } = getTuyaSettings();
+  const { userId, userCode } = getTuyaSettings();
+
+  if (userCode) {
+    // grant_type=2: the token response includes the uid directly — no need to
+    // configure a User ID manually in the developer portal.
+    const tokenResult = await getAccessToken();
+    const uid = tokenResult.uid;
+    return await tuyaRequest('GET', `/v1.0/users/${uid}/devices`, null, tokenResult);
+  }
+
   if (!userId) {
-    // Try to get devices for the account owner
-    throw new Error('Tuya User ID not configured. Please set it in Settings.');
+    throw new Error('Tuya User ID or User Code not configured. Please set them in Settings.');
   }
   return await tuyaRequest('GET', `/v1.0/users/${userId}/devices`);
 }

@@ -85,8 +85,26 @@ All configuration is stored in JSON files inside the `DATA_DIR` directory (defau
 
 1. Sign in to [iot.tuya.com](https://iot.tuya.com)
 2. Create a project and note the **Access ID** and **Access Secret**
-3. Under **Devices → Link App Account**, link your Tuya app account and note your **User ID**
-4. Enter these values in the **Settings** page of the app
+3. Under **Devices → Link App Account**, link your Tuya app account
+4. Enter the credentials in the **Settings** page of the app
+
+### Identifying your account (choose one option)
+
+#### Option A – User Code (recommended, same approach as Home Assistant)
+
+The **User Code** is a short identifier available directly inside the Tuya Smart or Smart Life mobile app. No manual lookup in the developer portal is needed.
+
+1. Open the **Tuya Smart** or **Smart Life** app on your phone
+2. Go to **Profile** (bottom-right) → tap your **avatar / username**
+3. Tap **User Code** (sometimes under *Settings → Account & Security → User Code*)
+4. Copy the code (e.g. `a1b2c3d4e5f6`) and paste it into the **User Code** field in Settings
+
+When a User Code is configured it takes priority. The app uses `grant_type=2` (same as the Tuya integration for Home Assistant) to authenticate and automatically resolves the User ID — no need to enter the User ID separately.
+
+#### Option B – User ID (classic, from the developer portal)
+
+1. Under **Devices → Link App Account** on [iot.tuya.com](https://iot.tuya.com), find your account's **UID**
+2. Enter it in the **User ID** field in Settings
 
 ## Default Credentials
 
