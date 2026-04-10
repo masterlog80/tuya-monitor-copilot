@@ -29,7 +29,8 @@ settingsDb
       accessId: '',
       accessSecret: '',
       region: 'eu',
-      userId: ''
+      userId: '',
+      userCode: ''
     },
     app: {
       refreshInterval: 30,

@@ -17,7 +17,8 @@ router.get('/', requireAdmin, (req, res) => {
       accessId: tuya.accessId,
       accessSecret: tuya.accessSecret ? SECRET_MASK : '',
       region: tuya.region,
-      userId: tuya.userId
+      userId: tuya.userId,
+      userCode: tuya.userCode || ''
     },
     app: {
       refreshInterval: app.refreshInterval
@@ -34,7 +35,8 @@ router.put('/', requireAdmin, (req, res) => {
     const updates = {
       accessId: tuya.accessId !== undefined ? tuya.accessId : current.accessId,
       region: tuya.region !== undefined ? tuya.region : current.region,
-      userId: tuya.userId !== undefined ? tuya.userId : current.userId
+      userId: tuya.userId !== undefined ? tuya.userId : current.userId,
+      userCode: tuya.userCode !== undefined ? tuya.userCode : (current.userCode || '')
     };
     // Only update secret if a real value is provided (not masked)
     if (tuya.accessSecret && tuya.accessSecret !== SECRET_MASK) {
