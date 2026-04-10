@@ -2,14 +2,12 @@
 
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 // Rate limit login attempts: max 10 per 15 minutes per IP
 const loginLimiter = rateLimit({
@@ -29,6 +27,14 @@ const apiLimiter = rateLimit({
   message: { error: 'Too many requests, please slow down.' }
 });
 
+// Static rate limit: 300 req per minute per IP (prevents rapid filesystem access)
+const staticLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
@@ -44,7 +50,7 @@ app.use('/api/devices', require('./routes/devices'));
 app.get('/healthz', (req, res) => res.json({ status: 'ok' }));
 
 // SPA fallback - serve index.html for all non-API routes
-app.get('*', (req, res) => {
+app.get('*', staticLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 

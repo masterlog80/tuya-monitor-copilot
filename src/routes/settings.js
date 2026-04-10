@@ -36,9 +36,11 @@ router.put('/', requireAdmin, (req, res) => {
       region: tuya.region !== undefined ? tuya.region : current.region,
       userId: tuya.userId !== undefined ? tuya.userId : current.userId
     };
-    // Only update secret if a real value is provided (not masked)
+    // Only update secret if a real value is provided (not masked and not empty)
     if (tuya.accessSecret && tuya.accessSecret !== SECRET_MASK) {
       updates.accessSecret = tuya.accessSecret;
+    } else {
+      updates.accessSecret = current.accessSecret;
     }
     settingsDb.set('tuya', { ...current, ...updates }).write();
   }

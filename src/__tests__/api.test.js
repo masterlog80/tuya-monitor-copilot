@@ -181,8 +181,9 @@ describe('Settings API', () => {
     expect(res.status).toBe(200);
     expect(res.body.tuya).toBeDefined();
     expect(res.body.app).toBeDefined();
-    // Secret should be masked or empty
-    expect(res.body.tuya.accessSecret).not.toMatch(/^[a-zA-Z0-9]{32,}$/);
+    // Secret should be masked or empty (not a real secret value)
+    const secret = res.body.tuya.accessSecret;
+    expect(secret === '' || secret === '********').toBe(true);
   });
 
   test('PUT /api/settings - saves settings', async () => {

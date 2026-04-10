@@ -351,7 +351,7 @@ function renderDevicesTable() {
   });
   tableEl.querySelectorAll('.table-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const on = btn.dataset.deviceOn === 'true' ? false : true;
+      const on = btn.dataset.deviceOn !== 'true';
       quickToggle(btn.dataset.deviceId, on, btn);
     });
   });
@@ -388,7 +388,7 @@ async function openDeviceModal(deviceId) {
     const detail = await api('GET', `/devices/${deviceId}`);
     if (!detail) return;
 
-    const isOn = detail.status ? detail.status.some(s => (s.code === 'switch_1' || s.code === 'switch') && s.value === true) : false;
+    const isOn = isDeviceOn(detail);
 
     document.getElementById('modal-body').innerHTML = `
       <div class="device-detail-grid">

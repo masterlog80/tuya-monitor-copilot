@@ -107,7 +107,6 @@ async function tuyaRequest(method, urlPath, body = null) {
 async function getDevices() {
   const { userId } = getTuyaSettings();
   if (!userId) {
-    // Try to get devices for the account owner
     throw new Error('Tuya User ID not configured. Please set it in Settings.');
   }
   return await tuyaRequest('GET', `/v1.0/users/${userId}/devices`);

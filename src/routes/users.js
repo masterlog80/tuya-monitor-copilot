@@ -23,6 +23,9 @@ router.post('/', requireAdmin, (req, res) => {
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password required' });
   }
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
   if (!['admin', 'user'].includes(role)) {
     return res.status(400).json({ error: 'Role must be admin or user' });
   }
@@ -92,6 +95,9 @@ router.put('/me/password', requireAuth, (req, res) => {
   const { currentPassword, newPassword } = req.body;
   if (!currentPassword || !newPassword) {
     return res.status(400).json({ error: 'Current and new password required' });
+  }
+  if (newPassword.length < 6) {
+    return res.status(400).json({ error: 'New password must be at least 6 characters' });
   }
 
   const user = usersDb.get('users').find({ id: req.user.id }).value();

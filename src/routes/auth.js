@@ -34,13 +34,6 @@ router.post('/login', (req, res) => {
     { expiresIn: '8h' }
   );
 
-  // Set cookie and return token for SPA
-  res.cookie('token', token, {
-    httpOnly: true,
-    sameSite: 'strict',
-    maxAge: 8 * 60 * 60 * 1000
-  });
-
   res.json({
     token,
     user: { id: user.id, username: user.username, role: user.role }
