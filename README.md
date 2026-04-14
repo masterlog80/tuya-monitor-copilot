@@ -14,20 +14,6 @@ A modern web application to manage and monitor Tuya smart devices. Built to run 
 - 🌙 **Dark/Light Theme** – Toggle between dark and light mode
 - 🐳 **Containerised** – Docker + K3S/Kubernetes manifests included
 
-## Screenshots
-
-### Login
-![Login](https://github.com/user-attachments/assets/b650f645-0541-415b-bd64-8cc84aa3b66c)
-
-### Dashboard
-![Dashboard](https://github.com/user-attachments/assets/9ec624a0-5046-4cf6-9e1c-48d6bae8a88f)
-
-### Settings
-![Settings](https://github.com/user-attachments/assets/83307a62-d19e-411b-aab0-ff01eb42c273)
-
-### User Management
-![Users](https://github.com/user-attachments/assets/0ad1bd40-2e66-4a9d-9947-7a2562496d48)
-
 ## Quick Start
 
 ### Local (Node.js)
@@ -42,7 +28,12 @@ npm start
 ### Docker Compose
 
 ```bash
-docker compose up -d
+git clone https://github.com/masterlog80/tuya-monitor-copilot
+cd tuya-monitor-copilot
+
+yes | docker image prune --all
+docker build -t tuya-monitor-copilot .
+
 # Open http://localhost:3000
 ```
 
@@ -152,3 +143,16 @@ tuya-monitor/
 ├── docker-compose.yml
 └── package.json
 ```
+## Screenshots
+
+### Login
+![Login](https://github.com/user-attachments/assets/b650f645-0541-415b-bd64-8cc84aa3b66c)
+
+### Dashboard
+![Dashboard](https://github.com/user-attachments/assets/9ec624a0-5046-4cf6-9e1c-48d6bae8a88f)
+
+### Settings
+![Settings](https://github.com/user-attachments/assets/83307a62-d19e-411b-aab0-ff01eb42c273)
+
+### User Management
+![Users](https://github.com/user-attachments/assets/0ad1bd40-2e66-4a9d-9947-7a2562496d48)
